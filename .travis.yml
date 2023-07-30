@@ -3,7 +3,7 @@ services:
   - docker
 
 before_install:
-  - docker build -t smithprince22/react-test -f ./client/Dockerfile.dev
+  - docker build -t smithprince22/react-test -f ./client/Dockerfile.dev ./client
 
 script:
   - docker run -e CI=true smithprince22/react-test npm test
@@ -13,3 +13,10 @@ after_success:
   - docker build -t smithprince22/multi-nginx ./nginx
   - docker build -t smithprince22/mutli-server ./server
   - docker build -t smithprince22/mutli-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push images to docker-hub
+  - docker push smithprince22/multi-client
+  - docker push smithprince22/multi-nginx
+  - docker push smithprince22/multi-server
+  - docker push smithprince22/multi-worker
